@@ -153,10 +153,8 @@
 // const Cart = () => {
 //   const cart = useSelector((state) => state.cart);
 //   const quantity = useSelector((state) => state.cart.quantity);
- 
-//   const history = useHistory();
 
-  
+//   const history = useHistory();
 
 //   return (
 //     <Container>
@@ -171,9 +169,9 @@
 //           <TopTexts>
 //             <TopText>Shopping Bag ({quantity})</TopText>
 //           </TopTexts>
-         
+
 //             <TopButton>CHECKOUT NOW</TopButton>
-         
+
 //         </Top>
 //         <Bottom>
 //           <Info>
@@ -221,10 +219,9 @@
 //               <SummaryItemText>Total</SummaryItemText>
 //               <SummaryItemPrice>€ {cart.total}</SummaryItemPrice>
 //             </SummaryItem>
-        
-         
+
 //               <Button>CHECKOUT NOW</Button>
-            
+
 //           </Summary>
 //         </Bottom>
 //       </Wrapper>
@@ -235,17 +232,14 @@
 
 // export default Cart;
 
-
-
 // Cart.jsx
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import {loadStripe} from '@stripe/stripe-js';
-import Navbar from '../components/Navbar';
-import Announcement from '../components/Announcement';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { loadStripe } from "@stripe/stripe-js";
+import Navbar from "../components/Navbar";
+import Announcement from "../components/Announcement";
+import { useSelector } from "react-redux";
 // import { useLocation } from 'react-router-dom';
-
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
@@ -253,145 +247,185 @@ const Cart = () => {
   // const userId = new URLSearchParams(search).get('userId');
   const { currentUser } = useSelector((state) => state.user);
 
+  console.log(currentUser);
+
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        if (!currentUser || !currentUser.userId || !currentUser.accessToken) {
-          console.error('User information is missing.');
+        if (!currentUser || !currentUser._id || !currentUser.accessToken) {
+          console.error("User information is missing.");
           return;
         }
-  
-        const response = await axios.get(`http://localhost:4000/api/cart/find/${currentUser.userId}`, {
-          headers: {
-            Authorization: `Bearer ${currentUser.accessToken}`,
-          },
-        });
+
+        const response = await axios.get(
+          `http://localhost:4000/api/cart/find/${currentUser._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${currentUser.accessToken}`,
+            },
+          }
+        );
         setCart(response.data.products);
       } catch (error) {
-        console.error('Error fetching cart:', error);
+        console.error("Error fetching cart:", error);
       }
     };
-  
+
     if (currentUser) {
       fetchCart();
     }
   }, [currentUser]);
-  
-   // Calculate total price
-   const calculateTotalPrice = () => {
+
+  // Calculate total price
+  const calculateTotalPrice = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   console.log(cart);
   // console.log("User ID:", userId);
 
+  // payment integration
+  const makePayment = async () => {
+    const stripe = await loadStripe(
+      "pk_test_51OEo0uGmLyW5XcAqRUzbzLuO1mqxwY5r4haQhmCxNa4wxr0uuJrSOv3SBRqn3IyykdwL5pJeHRQaJmFlIem0oW7T00UKlNQOKI"
+    );
 
-// payment integration
-const makePayment = async()=>{
-  const stripe = await loadStripe("pk_test_51OEo0uGmLyW5XcAqRUzbzLuO1mqxwY5r4haQhmCxNa4wxr0uuJrSOv3SBRqn3IyykdwL5pJeHRQaJmFlIem0oW7T00UKlNQOKI");
+    const body = {
+      products: cart,
+    };
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    const response = await fetch("http://localhost:4000/api/payment/payment", {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(body),
+    });
 
-  const body = {
-      products:cart
-  }
-  const headers = {
-      "Content-Type":"application/json"
-  }
-  const response = await fetch("http://localhost:4000/api/payment/payment",{
-      method:"POST",
-      headers:headers,
-      body:JSON.stringify(body)
-  });
+    const session = await response.json();
 
-  const session = await response.json();
+    const result = stripe.redirectToCheckout({
+      sessionId: session.id,
+    });
 
-  const result = stripe.redirectToCheckout({
-      sessionId:session.id
-  });
-  
-  if(result.error){
+    if (result.error) {
       console.log(result.error);
-  }
-}
-
-
+    }
+  };
 
   return (
     <>
-    <Navbar/>
-    <Announcement/>
-    <div className="bg-white py-6 sm:py-8 lg:py-12">
-      <div class="mx-auto max-w-screen-lg px-4 md:px-8">
-      
-      <div class="mb-6 sm:mb-10 lg:mb-16">
-      <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl">Your Cart</h2>
-    </div>
-    {/* <p>User ID: {userId}</p> */}
-      <div className="mb-6 flex flex-col gap-4 sm:mb-8 md:gap-6">
-        {/* Map through cart items and render each product */}
-        {cart.map((item) => (
-          <div key={item.productId} className="flex flex-wrap gap-x-4 overflow-hidden rounded-lg border sm:gap-y-4 lg:gap-6">
-            <a href="#" className="group relative block h-48 w-32 overflow-hidden bg-gray-100 sm:h-56 sm:w-40">
-              <img src={item.img} loading="lazy" alt={item.title} className="h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
-            </a>
+      <Navbar />
+      <Announcement />
+      <div className="bg-white py-6 sm:py-8 lg:py-12">
+        <div class="mx-auto max-w-screen-lg px-4 md:px-8">
+          <div class="mb-6 sm:mb-10 lg:mb-16">
+            <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl">
+              Your Cart
+            </h2>
+          </div>
+          {/* <p>User ID: {userId}</p> */}
+          <div className="mb-6 flex flex-col gap-4 sm:mb-8 md:gap-6">
+            {/* Map through cart items and render each product */}
+            {cart.map((item) => (
+              <div
+                key={item.productId}
+                className="flex flex-wrap gap-x-4 overflow-hidden rounded-lg border sm:gap-y-4 lg:gap-6"
+              >
+                <a
+                  href="#"
+                  className="group relative block h-48 w-32 overflow-hidden bg-gray-100 sm:h-56 sm:w-40"
+                >
+                  <img
+                    src={item.img}
+                    loading="lazy"
+                    alt={item.title}
+                    className="h-full w-full object-cover object-center transition duration-200 group-hover:scale-110"
+                  />
+                </a>
 
-            <div className="flex flex-1 flex-col justify-between py-4">
-              <div>
-                <a href="#" className="mb-1 inline-block text-lg font-bold text-gray-800 transition duration-100 hover:text-gray-500 lg:text-xl">{item.title}</a>
+                <div className="flex flex-1 flex-col justify-between py-4">
+                  <div>
+                    <a
+                      href="#"
+                      className="mb-1 inline-block text-lg font-bold text-gray-800 transition duration-100 hover:text-gray-500 lg:text-xl"
+                    >
+                      {item.title}
+                    </a>
 
-                <span className="block text-gray-500">Size: {item.size}</span>
-                <span className="block text-gray-500">Color: {item.color}</span>
-                <span className="block text-gray-500">Quantity: {item.quantity}</span>
+                    <span className="block text-gray-500">
+                      Size: {item.size}
+                    </span>
+                    <span className="block text-gray-500">
+                      Color: {item.color}
+                    </span>
+                    <span className="block text-gray-500">
+                      Quantity: {item.quantity}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="mb-1 block font-bold text-gray-800 md:text-lg">
+                      ${item.price.toFixed(2)}
+                    </span>
+
+                    <span className="flex items-center gap-1 text-sm text-gray-500">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-green-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      In stock
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex w-full justify-between border-t p-4 sm:w-auto sm:border-none sm:pl-0 lg:p-6 lg:pl-0">
+                  {/* ... (existing code) */}
+                </div>
               </div>
+            ))}
+            {/* Map end */}
+          </div>
 
-              <div>
-                <span className="mb-1 block font-bold text-gray-800 md:text-lg">${item.price.toFixed(2)}</span>
+          <div class="flex flex-col items-end gap-4">
+            <div class="w-full rounded-lg bg-gray-100 p-4 sm:max-w-xs">
+              <div class="space-y-1"></div>
 
-                <span className="flex items-center gap-1 text-sm text-gray-500">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                  </svg>
+              <div class="mt-4 border-t pt-4">
+                <div class="flex items-start justify-between gap-4 text-gray-800">
+                  <span class="text-lg font-bold">Total</span>
 
-                  In stock
-                </span>
+                  <span class="flex flex-col items-end">
+                    <span class="text-lg font-bold">
+                      ${calculateTotalPrice().toFixed(2)}
+                    </span>
+                    <span class="text-sm text-gray-500">including VAT</span>
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div className="flex w-full justify-between border-t p-4 sm:w-auto sm:border-none sm:pl-0 lg:p-6 lg:pl-0">
-              {/* ... (existing code) */}
-            </div>
-          </div>
-        ))}
-        {/* Map end */}
-      </div>
-
-     
-    <div class="flex flex-col items-end gap-4">
-      <div class="w-full rounded-lg bg-gray-100 p-4 sm:max-w-xs">
-        <div class="space-y-1">
-        
-        </div>
-
-        <div class="mt-4 border-t pt-4">
-          <div class="flex items-start justify-between gap-4 text-gray-800">
-            <span class="text-lg font-bold">Total</span>
-
-            <span class="flex flex-col items-end">
-              <span class="text-lg font-bold">${calculateTotalPrice().toFixed(2)}</span>
-              <span class="text-sm text-gray-500">including VAT</span>
-            </span>
+            <button
+              onClick={makePayment}
+              class="inline-block rounded-lg bg-indigo-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 md:text-base"
+            >
+              Check out
+            </button>
           </div>
         </div>
       </div>
-
-      <button onClick={makePayment} class="inline-block rounded-lg bg-indigo-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 md:text-base">Check out</button>
-    </div>
-  
-    </div>
-    </div>
     </>
   );
 };
 
 export default Cart;
-
-
