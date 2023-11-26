@@ -46,6 +46,7 @@ router.post("/register", async (req, res) => {
       id: savedUser._id,
       username: savedUser.username,
       email: savedUser.email,
+      // isAdmin:true,
       token,
     };
 

@@ -74,16 +74,24 @@ export const getUsers = async (dispatch) => {
   }
 };
 
-export const deleteUser = async (id, dispatch) => {
+// In your apiCalls.js file or wherever you have your API calls:
+
+export const deleteUser = async (id, dispatch, token) => {
   dispatch(deleteUserStart());
   try {
-    const res = await userRequest.delete(`/users/${id}`);
+    // Include the Authorization header with the token
+    const res = await userRequest.delete(`/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     dispatch(deleteUserSuccess(res.data));
-    window.location.reload(false)
+    window.location.reload(false);
   } catch (err) {
     dispatch(deleteUserFailure());
   }
 };
+
 
 export const updateUser = async (id, ad, dispatch) => {
   dispatch(updateUserStart());
@@ -179,12 +187,15 @@ export const updatePrd = async (dispatch, id, name, desc, price, category, color
   }
 };
 
-export const addProduct = async (product, dispatch) => {
+export const addProduct = async (product, dispatch, token) => {
   dispatch(addProductStart());
   try {
-    const res = await userRequest.post(`/products`, product);
+    const res = await userRequest.post("/products", product, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     dispatch(addProductSuccess(res.data));
-    window.location.reload(false)
   } catch (err) {
     dispatch(addProductFailure());
   }

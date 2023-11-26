@@ -515,7 +515,7 @@ const Product = () => {
         <InforContainer>
           <Title>{product.title}</Title>
           <Desc>{product.desc}</Desc>
-          <Price>€ {product.price}</Price>
+          <Price>Pkr {product.price}</Price>
           <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
