@@ -48,14 +48,5 @@ APP_ID =
 - [React](https://reactjs.org/)
 - [Webpack](https://webpack.js.org/)
 
-## Homepage
 
-![Pic](https://raw.githubusercontent.com/healmasud/mern-stack-ecommerce/master/github-overview/homepage_full.png)
 
-## Product details
-
-![Pic](https://raw.githubusercontent.com/healmasud/mern-stack-ecommerce/master/github-overview/product_details.png)
-
-## Checkout
-
-![Pic](https://raw.githubusercontent.com/healmasud/mern-stack-ecommerce/master/github-overview/checkout.png)
