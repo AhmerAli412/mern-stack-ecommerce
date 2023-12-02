@@ -133,59 +133,95 @@ export const getUser = async (id, dispatch) => {
 };
 
 
-export const deleteProduct = async (id, dispatch) => {
+export const deleteProduct = async (id, dispatch, token) => {
   dispatch(deleteProductStart());
   try {
-    const res = await userRequest.delete(`/products/${id}`);
+    // Include the Authorization header with the token
+    const res = await userRequest.delete(`/products/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     dispatch(deleteProductSuccess(res.data));
-    window.location.reload(false)
+    window.location.reload(false);
   } catch (err) {
     dispatch(deleteProductFailure());
   }
 };
 
-export const updateProduct = async (id, dispatch) => {
+export const updateProduct = async (id, product, dispatch, token) => {
   dispatch(updateProductStart());
+
+  // Log the payload before making the API call
+  console.log('Update Product Payload:', { id, product, token });
+
   try {
-    const res = await userRequest.delete(`/products/${id}`);
-    dispatch(updateProductSuccess8(res.data));
-    window.location.reload(false)
+    // Instead of sending the entire product object, create an object with only the fields you want to update
+    const updatedFields = {
+      title: product.title, // Add other fields as needed
+      // Add other fields as needed
+    };
+
+    const res = await userRequest.put(`/products/${id}`, updatedFields, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Assuming the response contains the updated product data
+    const updatedProduct = res.data;
+
+    if (updatedProduct) {
+      // Instead of dispatching the updated product directly, call the updateProductSuccess action
+      dispatch(updateProductSuccess(updatedProduct));
+      window.location.reload(false);
+    } else {
+      // Handle the case where the response data is not as expected
+      dispatch(updateProductFailure());
+      console.error("Invalid response format for update product");
+    }
   } catch (err) {
     dispatch(updateProductFailure());
+    console.error(err);
   }
 };
 
-export const updatePrd = async (dispatch, id, name, desc, price, category, color, size, status) => {
+
+
+
+
+
+
+export const updatePrd = async (dispatch, id, name, desc, price, category, color, size, status, token) => {
   dispatch(updateProductStart())
   try {
     let stt = false;
     if (status.inStock === "true") {
-      stt = true 
-    } else {stt = false}
-    const res = await publicRequest.put("/auth/updatePrd", {
-      id: id, 
+      stt = true;
+    } else {
+      stt = false;
+    }
+    const res = await userRequest.put(`/products/${id}`, {
+      _id: id,
       name: name,
       desc: desc,
       price: price,
       category: category,
       color: color,
       size: size,
-      status: stt,
+      inStock: stt,
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-    dispatch(updateProductSuccess({
-      id, 
-      name,
-      desc,
-      price,
-      category, 
-      color,
-      size,
-      stt
-    }))
+    dispatch(updateProductSuccess(res.data));
+    window.location.reload(false);
   } catch (err) {
-    dispatch(updateProductFailure())
+    dispatch(updateProductFailure());
   }
 };
+
 
 export const addProduct = async (product, dispatch, token) => {
   dispatch(addProductStart());

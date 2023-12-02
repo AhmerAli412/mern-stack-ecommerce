@@ -26,7 +26,7 @@ export default function WidgetSm() {
   }, []);
 
   const handleDelete = (id) => {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NjFlZTFkZDhkODFjMDRkYzkwNjFlOCIsImlzQWRtaW4iOnRydWUsImlhdCI6MTcwMDkxNjc2NSwiZXhwIjoxNzAxMTc1OTY1fQ.yKOXXpBZHtG0CCyrq203Z4TIug-b3AinDXkA81B9edU"; // Replace with your actual hardcoded admin token
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NmIwZWEyZWVhYTJkYzU3ZGNkMTZiYyIsImlzQWRtaW4iOnRydWUsImlhdCI6MTcwMTUxNDkxNCwiZXhwIjoxNzA1NDAyOTE0fQ.l5kzQWAR7bkNsRD5nI8xw2qub0UuCRp5-vmD2G_GeHw"; // Replace with your actual hardcoded admin token
   
     // Check if the user has a valid token
     if (token) {

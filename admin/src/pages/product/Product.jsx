@@ -56,6 +56,8 @@ export default function Product() {
   const [size, setSize] = useState([]);
   const [status, setStatus] = useState("");
 
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NmIwZWEyZWVhYTJkYzU3ZGNkMTZiYyIsImlzQWRtaW4iOnRydWUsImlhdCI6MTcwMTUxNDkxNCwiZXhwIjoxNzA1NDAyOTE0fQ.l5kzQWAR7bkNsRD5nI8xw2qub0UuCRp5-vmD2G_GeHw";
+
   const handleClick = () => {
     let nm = "";
     if (name === "") {
@@ -79,21 +81,21 @@ export default function Product() {
     }
 
     let ct = [];
-    if (category === []) {
+    if (category == []) {
       ct = prdcategory;
     } else {
       ct = category;
     }
 
     let cl = [];
-    if (color === []) {
+    if (color == []) {
       cl = prdcolor;
     } else {
       cl = color;
     }
 
     let sz = [];
-    if (size === []) {
+    if (size == []) {
       sz = prdsize;
     } else {
       sz = size;
@@ -106,7 +108,7 @@ export default function Product() {
       st = status;
     }
 
-    updatePrd(dispatch, productId, nm, dsc, pr, ct, cl, sz, st);
+    updatePrd(dispatch, productId, nm, dsc, pr, ct, cl, sz, st, token);
   };
 
   const handleChange = (e) => {

@@ -21,12 +21,13 @@ router.post("/", verifyTokenAndAdmin, async (req, res) => {
 });
 
 // UPDATE PRODUCT
+// UPDATE PRODUCT
 router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       {
-        $set: req.body,
+        $set: req.body, // Ensure that req.body contains the necessary properties, including 'title'
       },
       { new: true }
     );
@@ -35,6 +36,7 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
     res.status(500).json(err);
   }
 });
+
 
 // DELETE PRODUCT
 router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
