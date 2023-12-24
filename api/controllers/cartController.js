@@ -75,6 +75,31 @@ const getCartByUserId = async (req, res) => {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   };
+
+
+
+  const makePayment = async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const { products } = req.body;
   
-  module.exports = { addToCart, getCartByUserId };
+      // Update the user's cart by removing items with quantity 0
+      const updatedCart = products.filter((product) => product.quantity !== 0);
+  
+      // Save the updated cart to the database
+      await Cart.findOneAndUpdate(
+        { userId: userId },
+        { $set: { products: updatedCart } },
+        { new: true }
+      );
+  
+      res.status(200).json({ message: "Cart updated after payment" });
+    } catch (error) {
+      console.error("Error updating cart after payment:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  };
+  
+  
+  module.exports = { addToCart, getCartByUserId, makePayment };
   

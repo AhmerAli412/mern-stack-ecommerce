@@ -230,6 +230,7 @@ const Product = ({ item }) => {
           </svg>
           Add to cart
         </Link>
+      
       </div>
     </div>
   );

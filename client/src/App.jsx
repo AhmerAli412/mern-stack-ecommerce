@@ -58,6 +58,7 @@ import Login from "./pages/Login";
 import Product from "./pages/Product";
 import ProductList from "./pages/ProductList";
 import Register from "./pages/Register";
+import Wishlist from "./pages/Wishlist"
 import './index.css'
 import {
   BrowserRouter as Router,
@@ -115,6 +116,9 @@ const App = () => {
         </PrivateRoute>
         <PrivateRoute path="/product/:id">
           <Product />
+        </PrivateRoute>
+        <PrivateRoute path="/wishlist">
+          <Wishlist/>
         </PrivateRoute>
         <PrivateRoute path="/cart">
           <Cart />

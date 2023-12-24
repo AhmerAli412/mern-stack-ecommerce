@@ -282,36 +282,41 @@ const Cart = () => {
   };
 
   console.log(cart);
-  // console.log("User ID:", userId);
+  
 
-  // payment integration
   const makePayment = async () => {
-    const stripe = await loadStripe(
-      "pk_test_51OEo0uGmLyW5XcAqRUzbzLuO1mqxwY5r4haQhmCxNa4wxr0uuJrSOv3SBRqn3IyykdwL5pJeHRQaJmFlIem0oW7T00UKlNQOKI"
-    );
+    try {
+      const stripe = await loadStripe("pk_test_51OEo0uGmLyW5XcAqRUzbzLuO1mqxwY5r4haQhmCxNa4wxr0uuJrSOv3SBRqn3IyykdwL5pJeHRQaJmFlIem0oW7T00UKlNQOKI"); // Replace with your actual Stripe publishable key
 
-    const body = {
-      products: cart,
-    };
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    const response = await fetch("http://localhost:4000/api/payment/payment", {
-      method: "POST",
-      headers: headers,
-      body: JSON.stringify(body),
-    });
+      const response = await axios.post("http://localhost:4000/api/payment/payment", {
+        products: cart,
+      });
 
-    const session = await response.json();
+      const session = await response.data;
 
-    const result = stripe.redirectToCheckout({
-      sessionId: session.id,
-    });
+      await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
 
-    if (result.error) {
-      console.log(result.error);
+      // After successful payment, update the cart on the server
+      await axios.post(
+        `http://localhost:4000/api/cart/make-payment/${currentUser._id}`,
+        { products: cart },
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.accessToken}`,
+          },
+        }
+      );
+
+      // No need to update local state here, it will be fetched again on the next render
+    } catch (error) {
+      console.error("Error making payment:", error);
     }
   };
+
+
+ 
 
   return (
     <>
