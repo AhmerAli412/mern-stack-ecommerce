@@ -238,12 +238,20 @@ import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
 import Navbar from "../components/Navbar";
 import Announcement from "../components/Announcement";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { Delete } from "@material-ui/icons";
+import { removeProduct } from "../redux/cartRedux";
 // import { useLocation } from 'react-router-dom';
 
 const Cart = () => {
+  const [orderDetails, setOrderDetails] = useState({
+    address: "",
+    size: "", // Add other necessary fields
+    // ...
+  });
   const [cart, setCart] = useState([]);
   // const { search } = useLocation();
+  const dispatch = useDispatch();
   // const userId = new URLSearchParams(search).get('userId');
   const { currentUser } = useSelector((state) => state.user);
 
@@ -276,7 +284,6 @@ const Cart = () => {
     }
   }, [currentUser]);
 
-  // Calculate total price
   const calculateTotalPrice = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
@@ -316,6 +323,30 @@ const Cart = () => {
   };
 
 
+  
+
+  
+
+  const handleRemoveProduct = async (productId) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:4000/api/cart/remove/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.accessToken}`,
+          },
+        }
+      );
+
+      // Update local state or Redux store after removing the product
+      dispatch(removeProduct(productId));
+
+      // Optionally, you can also update the cart state
+      setCart(response.data.products);
+    } catch (error) {
+      console.error("Error removing product:", error);
+    }
+  };
  
 
   return (
@@ -329,9 +360,8 @@ const Cart = () => {
               Your Cart
             </h2>
           </div>
-          {/* <p>User ID: {userId}</p> */}
+
           <div className="mb-6 flex flex-col gap-4 sm:mb-8 md:gap-6">
-            {/* Map through cart items and render each product */}
             {cart.map((item) => (
               <div
                 key={item.productId}
@@ -395,11 +425,13 @@ const Cart = () => {
                 </div>
 
                 <div className="flex w-full justify-between border-t p-4 sm:w-auto sm:border-none sm:pl-0 lg:p-6 lg:pl-0">
-                  {/* ... (existing code) */}
+                  <Delete
+                    onClick={() => handleRemoveProduct(item.productId)}
+                    className="h-6 w-6 text-red-500 cursor-pointer"
+                  />
                 </div>
               </div>
             ))}
-            {/* Map end */}
           </div>
 
           <div class="flex flex-col items-end gap-4">

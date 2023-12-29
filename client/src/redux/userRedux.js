@@ -59,7 +59,6 @@
 // userRedux.js
 
 import { createSlice } from "@reduxjs/toolkit";
-import { publicRequest } from "../requestMethods";
 
 const userSlice = createSlice({
   name: "user",
@@ -98,6 +97,30 @@ const userSlice = createSlice({
       state.isFetching = false;
       state.error = true;
     },
+    updateProfileStart: (state) => {
+      state.isFetching = true;
+    },
+    updateProfileSuccess: (state, action) => {
+      state.isFetching = false;
+      state.currentUser = action.payload;
+      state.error = false;
+    },
+    updateProfileFailure: (state) => {
+      state.isFetching = false;
+      state.error = true;
+    },
+    deleteAccountStart: (state) => {
+      state.isFetching = true;
+    },
+    deleteAccountSuccess: (state) => {
+      state.isFetching = false;
+      state.currentUser = null;
+      state.error = false;
+    },
+    deleteAccountFailure: (state) => {
+      state.isFetching = false;
+      state.error = true;
+    },
   },
 });
 
@@ -109,5 +132,11 @@ export const {
   registerStart,
   registerSuccess,
   registerFailure,
+  updateProfileStart,
+  updateProfileSuccess,
+  updateProfileFailure,
+  deleteAccountStart,
+  deleteAccountSuccess,
+  deleteAccountFailure,
 } = userSlice.actions;
 export default userSlice.reducer;

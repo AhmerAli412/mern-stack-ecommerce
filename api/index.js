@@ -27,45 +27,15 @@ app.use("/api/orders", orderRoute);
 app.use("/api/payment", stripeRoute);
 app.use('/api/cart', cartRoutes);
 
-// app.use('/api/cart', cartRoutes);
-
-
-// checkout api
-// app.post("/api/create-checkout-session",async(req,res)=>{
-//   const { product } = req.body;
-
-//     console.log(product);
-
-//     const lineItems = {
-//       price_data: {
-//         currency: "pkr",
-//         product_data: {
-//           name: product.name,
-//           images: [product.image],
-//         },
-//         unit_amount: product.price * 100 ,
-//       },
-//       quantity: product.quantity,
-     
-//     };
-
-//   const session = await stripe.checkout.sessions.create({
-//       payment_method_types:["card"],
-//       line_items:lineItems,
-//       mode:"payment",
-//       success_url:"http://localhost:3000/sucess",
-//       cancel_url:"http://localhost:3000/cancel",
-//   });
-
-//   res.json({id:session.id})
-
-// })
 
 mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("Database connection successful");
   })
   .catch((err) => console.log(err));
+
+
+
 
 app.listen(process.env.PORT || 4000, () => {
   console.log("Backend server is running");

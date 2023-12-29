@@ -13,8 +13,22 @@ const cartSlice = createSlice({
       state.products.push(action.payload);
       state.total += action.payload.price * action.payload.quantity;
     },
+    removeProduct: (state, action) => {
+      // Find the index of the product in the array
+      const index = state.products.findIndex(
+        (product) => product.productId === action.payload
+      );
+
+      // Remove the product if found
+      if (index !== -1) {
+        const removedProduct = state.products[index];
+        state.quantity -= removedProduct.quantity;
+        state.total -= removedProduct.price * removedProduct.quantity;
+        state.products.splice(index, 1);
+      }
+    },
   },
 });
 
-export const { addProduct } = cartSlice.actions;
+export const { addProduct, removeProduct } = cartSlice.actions;
 export default cartSlice.reducer;

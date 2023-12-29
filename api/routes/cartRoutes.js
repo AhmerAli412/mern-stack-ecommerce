@@ -19,6 +19,7 @@ const { verifyToken } = require('./verifyToken');
 router.post('/add-to-cart', verifyToken, cartController.addToCart);
 router.get('/find/:userId', verifyToken, cartController.getCartByUserId);
 router.post('/make-payment/:userId', verifyToken, cartController.makePayment);
+router.delete('/remove/:productId', verifyToken, cartController.removeItemFromCart);
 
 
 module.exports = router;

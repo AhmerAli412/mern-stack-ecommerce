@@ -194,4 +194,44 @@ router.post("/wishlist/:id", verifyToken, async (req, res) => {
   }
 });
 
+router.delete("/wishlist/:id", verifyToken, async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Check if the user's ID is in the wishlist array
+    if (product.wishlist.includes(req.user.id)) {
+      // Remove the user's ID from the wishlist
+      product.wishlist = product.wishlist.filter(userId => userId !== req.user.id);
+
+      // Save the updated product
+      await product.save();
+
+      res.status(200).json({ message: "Product removed from wishlist" });
+    } else {
+      res.status(400).json({ message: "Product not in wishlist" });
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get("/search", async (req, res) => {
+  try {
+    const { query } = req.query;
+    const products = await Product.find({
+      $or: [
+        { title: { $regex: query, $options: "i" } }, // Case-insensitive title search
+        { desc: { $regex: query, $options: "i" } },  // Case-insensitive description search
+      ],
+    });
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 module.exports = router;

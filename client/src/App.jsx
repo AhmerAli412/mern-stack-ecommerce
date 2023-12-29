@@ -68,7 +68,10 @@ import {
 } from "react-router-dom";
 import Success from "./components/Success";
 import { useSelector } from "react-redux";
-
+import OrderTracking from "./pages/OrderTracking";
+// import UserOrders from "./components/UserOrders";
+import UserOrders from "./components/UserOrders";
+import UserProfile from "./components/UserProfile";
 const PrivateRoute = ({ children, ...rest }) => {
   const user = useSelector((state) => state.user.currentUser);
 
@@ -94,6 +97,7 @@ const PrivateRoute = ({ children, ...rest }) => {
 const App = () => {
   const user = useSelector((state) => state.user.currentUser);
 
+  const userId = '6554fcb76527e5b63afc07c8';
   return (
     <Router>
       <Switch>
@@ -101,6 +105,9 @@ const App = () => {
           <Home />
         </Route>
 
+        <Route exact path="/order">
+        <UserOrders userId={userId} />
+        </Route>
         <Route path="/login">
           {user ? <Redirect to="/" /> : <Login />}
         </Route>
@@ -123,10 +130,17 @@ const App = () => {
         <PrivateRoute path="/cart">
           <Cart />
         </PrivateRoute>
+        <PrivateRoute path="/order/:id">
+          <OrderTracking/>
+        </PrivateRoute>
         <PrivateRoute path="/success">
           <Success />
         </PrivateRoute>
+        <PrivateRoute path="/userprofile">
+         <UserProfile/>
+        </PrivateRoute>
       </Switch>
+   
     </Router>
   );
 };

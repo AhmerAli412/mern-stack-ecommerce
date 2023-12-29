@@ -101,5 +101,33 @@ const getCartByUserId = async (req, res) => {
   };
   
   
-  module.exports = { addToCart, getCartByUserId, makePayment };
+  const removeItemFromCart = async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
   
+      const userId = req.user.id;
+      const productIdToRemove = req.params.productId;
+  
+      let cart = await Cart.findOne({ userId });
+  
+      if (!cart) {
+        return res.status(404).json({ message: 'Cart not found' });
+      }
+  
+      // Remove the product from the cart
+      cart.products = cart.products.filter(
+        (product) => product.productId !== productIdToRemove
+      );
+  
+      await cart.save();
+  
+      res.status(200).json(cart);
+    } catch (error) {
+      console.error('Error removing item from cart:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+  
+  module.exports = { addToCart, getCartByUserId, makePayment, removeItemFromCart };

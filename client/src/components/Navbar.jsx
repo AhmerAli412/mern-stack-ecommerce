@@ -103,7 +103,9 @@ const Navbar = () => {
         <Right>
           {user ? (
             <>
+            <Link to="/userprofile">
               <MenuItem>{`Hello, ${user.username}`}</MenuItem>
+              </Link>
               <MenuItem onClick={handleLogout}>LOGOUT</MenuItem>
             </>
           ) : (
@@ -121,6 +123,8 @@ const Navbar = () => {
               <FavoriteBorder />
             </MenuItem>
           </Link>
+
+       
           <Link to={"/cart"}>
             <MenuItem>
               <Badge badgeContent={quantity} color="primary">

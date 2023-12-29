@@ -577,6 +577,7 @@ const Product = () => {
       });
 
       if (response.ok) {
+        dispatch(addProduct());
         toast.success('Product added to cart', {
           position: toast.POSITION.BOTTOM_CENTER,
         });
