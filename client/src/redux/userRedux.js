@@ -121,6 +121,9 @@ const userSlice = createSlice({
       state.isFetching = false;
       state.error = true;
     },
+    updateUser: (state, action) => {
+      state.currentUser = action.payload;
+    },
   },
 });
 
@@ -129,6 +132,7 @@ export const {
   loginSuccess,
   loginFailure,
   logout,
+  updateUser,
   registerStart,
   registerSuccess,
   registerFailure,

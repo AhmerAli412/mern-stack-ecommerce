@@ -283,7 +283,7 @@ export default function NewProduct() {
               color: clr,
             };
 
-            const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NmIwZWEyZWVhYTJkYzU3ZGNkMTZiYyIsImlzQWRtaW4iOnRydWUsImlhdCI6MTcwMTUxNDkxNCwiZXhwIjoxNzA1NDAyOTE0fQ.l5kzQWAR7bkNsRD5nI8xw2qub0UuCRp5-vmD2G_GeHw'; // Replace with your actual token
+            const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTE0NGVkNWRlMzM1YTQxN2RjMjQ5YSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTcwNTA2Nzc1NywiZXhwIjoxNzEwNjgzNzU3fQ.3vBoOTQScc9AlBzRwQAFWtMu9idQYOECWrl1kBa9g5I'; // Replace with your actual token
 
             addProduct(product, dispatch, token);
           });

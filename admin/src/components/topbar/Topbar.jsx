@@ -23,7 +23,7 @@ export default function Topbar() {
           {user ? (
             <div className="tp">
               <h3 style={{ fontWeight: "normal" }}>{user.username}</h3>
-              <Link to="/website">
+              <a href="http://localhost:3000/">
                 <DashboardIcon
                   style={{
                     marginTop: "2px",
@@ -31,7 +31,7 @@ export default function Topbar() {
                     marginLeft: "10px",
                   }}
                 />
-              </Link>
+              </a>
               <button onClick={handleClick}>
                 <LogoutIcon style={{ marginTop: "2px" }} />
               </button>

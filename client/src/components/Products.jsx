@@ -98,7 +98,7 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-const Products = ({ cat, filters, sort }) => {
+const Products = ({ cat, filters, sort, searchTerm }) => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
@@ -131,6 +131,9 @@ const Products = ({ cat, filters, sort }) => {
             return true;
           })
         )
+        .filter((item) =>
+          item.title.toLowerCase().includes(searchTerm.toLowerCase())
+        )
         .sort((a, b) => {
           if (sort === "newest") {
             return new Date(b.createdAt) - new Date(a.createdAt);
@@ -145,7 +148,7 @@ const Products = ({ cat, filters, sort }) => {
     };
 
     applyFilters();
-  }, [products, filters, sort]);
+  }, [products, filters, sort, searchTerm]);
 
   console.log("Filtered Products:", filteredProducts);
 

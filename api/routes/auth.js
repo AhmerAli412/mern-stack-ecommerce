@@ -38,7 +38,7 @@ router.post("/register", async (req, res) => {
         isAdmin: savedUser.isAdmin,
       },
       process.env.JWT_SEC,
-      { expiresIn: "45d" }
+      { expiresIn: "65d" }
     );
 
     // Include the user ID and token in the response
@@ -84,7 +84,7 @@ router.post("/login",async (req, res) => {
         isAdmin: user.isAdmin,
       },
       process.env.JWT_SEC,
-      { expiresIn: "45d" }
+      { expiresIn: "65d" }
     );
 
     const { password, ...others } = user._doc;

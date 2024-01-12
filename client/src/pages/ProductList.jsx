@@ -12,6 +12,11 @@ const ProductList = () => {
   const cat = pathSegments.length >= 3 ? pathSegments[2] : null;
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("newest");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleFilters = (e) => {
     const value = e.target.value;
@@ -28,7 +33,16 @@ const ProductList = () => {
       <h1 className="m-5 text-3xl font-bold">{cat}</h1>
       <div className="flex justify-between m-5">
         <div className="m-2">
-          <span className="text-2xl font-semibold mr-2">Filter Products:</span>
+        {/* <div className="m-2"> */}
+        <span className="text-2xl font-semibold mr-2">Search Products:</span>
+        <input
+          type="text"
+          placeholder="Enter search term"
+          onChange={handleSearch}
+          className="p-2 border rounded-md"
+        />
+      {/* </div> */}
+          <span className="text-2xl font-semibold ml-10">Filter Products:</span>
           <select
             name="color"
             onChange={handleFilters}
@@ -69,7 +83,7 @@ const ProductList = () => {
           </select>
         </div>
       </div>
-      <Products cat={cat} filters={filters} sort={sort} />
+      <Products cat={cat} filters={filters} sort={sort} searchTerm={searchTerm} />
       <Newsletter />
       <Footer />
     </div>

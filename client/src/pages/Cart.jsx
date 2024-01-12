@@ -232,6 +232,116 @@
 
 // export default Cart;
 
+
+
+
+
+
+
+
+
+
+
+// Cart.jsx
+// import React, { useEffect, useState } from "react";
+// import axios from "axios";
+// import { loadStripe } from "@stripe/stripe-js";
+// import Navbar from "../components/Navbar";
+// import Announcement from "../components/Announcement";
+// import { useSelector, useDispatch } from "react-redux";
+// import { Delete } from "@material-ui/icons";
+// import { removeProduct } from "../redux/cartRedux";
+// // import { useLocation } from 'react-router-dom';
+
+// const Cart = () => {
+//   const [orderDetails, setOrderDetails] = useState({
+//     address: "",
+//     size: "", // Add other necessary fields
+//     // ...
+//   });
+//   const [cart, setCart] = useState([]);
+//   // const { search } = useLocation();
+//   const dispatch = useDispatch();
+//   // const userId = new URLSearchParams(search).get('userId');
+//   const { currentUser } = useSelector((state) => state.user);
+
+//   console.log(currentUser);
+
+//   useEffect(() => {
+//     const fetchCart = async () => {
+//       try {
+//         if (!currentUser || !currentUser._id || !currentUser.accessToken) {
+//           console.error("User information is missing.");
+//           return;
+//         }
+  
+//         const response = await axios.get(
+//           `http://localhost:4000/api/cart/find/${currentUser._id}`,
+//           {
+//             headers: {
+//               Authorization: `Bearer ${currentUser.accessToken}`,
+//             },
+//           }
+//         );
+  
+//         setCart(response.data.products);
+//       } catch (error) {
+//         console.error("Error fetching cart:", error);
+//       }
+//     };
+  
+//     if (currentUser) {
+//       fetchCart();
+//     }
+//   }, [currentUser]);
+  
+//   // Add this useEffect to update cart after payment
+//   useEffect(() => {
+//     if (currentUser) {
+//       fetchCart(); // Fetch the updated cart after payment
+//     }
+//   }, [products]); // Assuming 'products' is the state that changes after payment
+  
+
+//   const calculateTotalPrice = () => {
+//     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+//   };
+
+//   console.log(cart);
+  
+
+//   const makePayment = async () => {
+//     try {
+//       const stripe = await loadStripe("pk_test_51OEo0uGmLyW5XcAqRUzbzLuO1mqxwY5r4haQhmCxNa4wxr0uuJrSOv3SBRqn3IyykdwL5pJeHRQaJmFlIem0oW7T00UKlNQOKI"); // Replace with your actual Stripe publishable key
+
+//       const response = await axios.post("http://localhost:4000/api/payment/payment", {
+//         products: cart,
+//       });
+
+//       const session = await response.data;
+
+//       await stripe.redirectToCheckout({
+//         sessionId: session.id,
+//       });
+
+//       // After successful payment, update the cart on the server
+//       await axios.post(
+//         `http://localhost:4000/api/cart/make-payment/${currentUser._id}`,
+//         { products: cart },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${currentUser.accessToken}`,
+//           },
+//         }
+//       );
+
+//       // No need to update local state here, it will be fetched again on the next render
+//     } catch (error) {
+//       console.error("Error making payment:", error);
+//     }
+//   };
+
+
 // Cart.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -241,44 +351,40 @@ import Announcement from "../components/Announcement";
 import { useSelector, useDispatch } from "react-redux";
 import { Delete } from "@material-ui/icons";
 import { removeProduct } from "../redux/cartRedux";
-// import { useLocation } from 'react-router-dom';
+// import Navbar from '../components/Navbar';
+// import Announcement from '../components/Announcement';
 
 const Cart = () => {
   const [orderDetails, setOrderDetails] = useState({
     address: "",
-    size: "", // Add other necessary fields
-    // ...
+    size: "",
   });
   const [cart, setCart] = useState([]);
-  // const { search } = useLocation();
   const dispatch = useDispatch();
-  // const userId = new URLSearchParams(search).get('userId');
   const { currentUser } = useSelector((state) => state.user);
 
-  console.log(currentUser);
+  const fetchCart = async () => {
+    try {
+      if (!currentUser || !currentUser._id || !currentUser.accessToken) {
+        console.error("User information is missing.");
+        return;
+      }
+
+      const response = await axios.get(
+        `http://localhost:4000/api/cart/find/${currentUser._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.accessToken}`,
+          },
+        }
+      );
+      setCart(response.data.products);
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        if (!currentUser || !currentUser._id || !currentUser.accessToken) {
-          console.error("User information is missing.");
-          return;
-        }
-
-        const response = await axios.get(
-          `http://localhost:4000/api/cart/find/${currentUser._id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${currentUser.accessToken}`,
-            },
-          }
-        );
-        setCart(response.data.products);
-      } catch (error) {
-        console.error("Error fetching cart:", error);
-      }
-    };
-
     if (currentUser) {
       fetchCart();
     }
@@ -288,23 +394,25 @@ const Cart = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  console.log(cart);
-  
-
   const makePayment = async () => {
     try {
-      const stripe = await loadStripe("pk_test_51OEo0uGmLyW5XcAqRUzbzLuO1mqxwY5r4haQhmCxNa4wxr0uuJrSOv3SBRqn3IyykdwL5pJeHRQaJmFlIem0oW7T00UKlNQOKI"); // Replace with your actual Stripe publishable key
-
-      const response = await axios.post("http://localhost:4000/api/payment/payment", {
-        products: cart,
-      });
-
+      const stripe = await loadStripe(
+        "pk_test_51OEo0uGmLyW5XcAqRUzbzLuO1mqxwY5r4haQhmCxNa4wxr0uuJrSOv3SBRqn3IyykdwL5pJeHRQaJmFlIem0oW7T00UKlNQOKI"
+      );
+  
+      const response = await axios.post(
+        "http://localhost:4000/api/payment/payment",
+        {
+          products: cart,
+        }
+      );
+  
       const session = await response.data;
-
+  
       await stripe.redirectToCheckout({
         sessionId: session.id,
       });
-
+  
       // After successful payment, update the cart on the server
       await axios.post(
         `http://localhost:4000/api/cart/make-payment/${currentUser._id}`,
@@ -315,16 +423,13 @@ const Cart = () => {
           },
         }
       );
-
-      // No need to update local state here, it will be fetched again on the next render
+  
+      // Call fetchCart again to get the updated cart
+      await fetchCart();
     } catch (error) {
       console.error("Error making payment:", error);
     }
   };
-
-
-  
-
   
 
   const handleRemoveProduct = async (productId) => {
@@ -341,18 +446,21 @@ const Cart = () => {
       // Update local state or Redux store after removing the product
       dispatch(removeProduct(productId));
 
-      // Optionally, you can also update the cart state
-      setCart(response.data.products);
+      // Call fetchCart again to get the updated cart
+      await fetchCart();
     } catch (error) {
       console.error("Error removing product:", error);
     }
   };
+
  
 
   return (
     <>
-      <Navbar />
-      <Announcement />
+      {/* <Navbar />
+      <Announcement /> */}
+      <Navbar/>
+      <Announcement/>
       <div className="bg-white py-6 sm:py-8 lg:py-12">
         <div class="mx-auto max-w-screen-lg px-4 md:px-8">
           <div class="mb-6 sm:mb-10 lg:mb-16">

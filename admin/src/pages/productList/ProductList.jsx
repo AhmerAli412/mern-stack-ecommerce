@@ -110,12 +110,12 @@ export default function ProductList() {
   }, [dispatch]);
 
   const handleDelete = (id) => {
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NmIwZWEyZWVhYTJkYzU3ZGNkMTZiYyIsImlzQWRtaW4iOnRydWUsImlhdCI6MTcwMTUxNDkxNCwiZXhwIjoxNzA1NDAyOTE0fQ.l5kzQWAR7bkNsRD5nI8xw2qub0UuCRp5-vmD2G_GeHw';
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTE0NGVkNWRlMzM1YTQxN2RjMjQ5YSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTcwNTA2Nzc1NywiZXhwIjoxNzEwNjgzNzU3fQ.3vBoOTQScc9AlBzRwQAFWtMu9idQYOECWrl1kBa9g5I';
     deleteProduct(id, dispatch, token);
   };
 
   const handleUpdate = (id) => {
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NmIwZWEyZWVhYTJkYzU3ZGNkMTZiYyIsImlzQWRtaW4iOnRydWUsImlhdCI6MTcwMTUxNDkxNCwiZXhwIjoxNzA1NDAyOTE0fQ.l5kzQWAR7bkNsRD5nI8xw2qub0UuCRp5-vmD2G_GeHw'; // Replace with your actual access token
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTE0NGVkNWRlMzM1YTQxN2RjMjQ5YSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTcwNTA2Nzc1NywiZXhwIjoxNzEwNjgzNzU3fQ.3vBoOTQScc9AlBzRwQAFWtMu9idQYOECWrl1kBa9g5I'; // Replace with your actual access token
     const productToUpdate = products.find((product) => product._id === id);
   
     // Check if productToUpdate exists and has the 'title' property
@@ -155,7 +155,7 @@ export default function ProductList() {
       renderCell: (params) => (
         <>
                        <Link to={"/product/" + params.row._id}>
-               <button className="productListEdit">Edit123</button>
+               <button className="productListEdit">Edit</button>
              </Link>
           <DeleteOutline className="productListDelete" onClick={() => handleDelete(params.row._id)} />
         </>

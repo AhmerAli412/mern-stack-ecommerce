@@ -76,22 +76,28 @@ const getCartByUserId = async (req, res) => {
     }
   };
 
-
-
   const makePayment = async (req, res) => {
     try {
       const userId = req.params.userId;
       const { products } = req.body;
   
-      // Update the user's cart by removing items with quantity 0
-      const updatedCart = products.filter((product) => product.quantity !== 0);
+      // Get the user's cart
+      let cart = await Cart.findOne({ userId });
+  
+      if (!cart) {
+        return res.status(404).json({ message: 'Cart not found' });
+      }
+  
+      // Create a new cart without the purchased products
+      const updatedCart = {
+        userId: cart.userId,
+        products: cart.products.filter((cartProduct) => {
+          return !products.some((purchasedProduct) => purchasedProduct.productId === cartProduct.productId);
+        }),
+      };
   
       // Save the updated cart to the database
-      await Cart.findOneAndUpdate(
-        { userId: userId },
-        { $set: { products: updatedCart } },
-        { new: true }
-      );
+      await Cart.findOneAndUpdate({ userId }, updatedCart, { new: true });
   
       res.status(200).json({ message: "Cart updated after payment" });
     } catch (error) {
@@ -99,6 +105,11 @@ const getCartByUserId = async (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     }
   };
+  
+  // module.exports = { addToCart, getCartByUserId, makePayment, removeItemFromCart };
+  
+  
+  // module.exports = { addToCart, getCartByUserId, makePayment, removeItemFromCart };
   
   
   const removeItemFromCart = async (req, res) => {

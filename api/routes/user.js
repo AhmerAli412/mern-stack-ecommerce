@@ -104,13 +104,19 @@ router.put("/update/:id", async (req, res) => {
     }
 
     // Update the user fields as needed
-    // For example, updating the username and email
+    // For example, updating the username and password
     if (req.body.username) {
       userToUpdate.username = req.body.username;
     }
 
-    if (req.body.email) {
-      userToUpdate.email = req.body.email;
+    if (req.body.password) {
+      // Encrypt the new password before saving
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        req.body.password,
+        process.env.PASS_SEC
+      ).toString();
+      
+      userToUpdate.password = encryptedPassword;
     }
 
     // Save the updated user
@@ -124,8 +130,6 @@ router.put("/update/:id", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
-
 
 // Delete User Account
 router.delete("/delete/:id", async (req, res) => {
