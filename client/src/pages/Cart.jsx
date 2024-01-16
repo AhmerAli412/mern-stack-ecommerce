@@ -347,6 +347,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import Announcement from "../components/Announcement";
 import { useSelector, useDispatch } from "react-redux";
 import { Delete } from "@material-ui/icons";
@@ -569,6 +570,7 @@ const Cart = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

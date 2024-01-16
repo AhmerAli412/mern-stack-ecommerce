@@ -526,6 +526,7 @@ import { mobile } from "../responsive";
 import Navbar from '../components/Navbar';
 import Announcement from '../components/Announcement';
 import { Add, Remove } from "@material-ui/icons";
+import Footer from "../components/Footer";
 
 const Product = () => {
   const location = useLocation();
@@ -577,7 +578,7 @@ const Product = () => {
       });
 
       if (response.ok) {
-        dispatch(addProduct());
+        // dispatch(addProduct());
         toast.success('Product added to the  cart', {
           position: toast.POSITION.BOTTOM_CENTER,
         });
@@ -681,6 +682,7 @@ const Product = () => {
         </div>
       </div>
       <ToastContainer />
+      <Footer/>
     </>
   );
 };
