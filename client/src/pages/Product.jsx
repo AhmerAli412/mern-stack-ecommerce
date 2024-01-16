@@ -578,7 +578,7 @@ const Product = () => {
 
       if (response.ok) {
         dispatch(addProduct());
-        toast.success('Product added to cart', {
+        toast.success('Product added to the  cart', {
           position: toast.POSITION.BOTTOM_CENTER,
         });
       } else {
